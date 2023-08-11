@@ -3,22 +3,45 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { toast } from "react-hot-toast/headless";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [user, setUser] = useState({
     email: "",
     password: "",
     username: "",
   });
 
+  const [buttonDisabled, setbuttonDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
+
   const onSignUp = async () => {
-    console.log("Signing up...");
+    try {
+      console.log("Signing up...");
+      setLoading(true);
+      const response = await axios.post("/api/users/signup", user);
+      console.log("Signup was successfull" + response);
+      router.push("/login");
+    } catch (error: any) {
+      console.log("Sign up Failed" + error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  React.useEffect(() => {
+    if (user.username.length > 0) setbuttonDisabled(false);
+    else setbuttonDisabled(true);
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <div className="w-full max-w-xs">
-        <h1 className="text-center text-2xl">Sign Up Page</h1>
+        <h1 className="text-center text-2xl">
+          {loading ? "Processing..." : "Sign Up Page"}
+        </h1>
         <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label
@@ -29,7 +52,7 @@ export default function SignUpPage() {
             </label>
             <div className="mb-6">
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
                 id="username"
                 type="text"
                 value={user.username}
@@ -46,7 +69,7 @@ export default function SignUpPage() {
               Email
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
               id="username"
               type="text"
               value={user.email}
@@ -64,7 +87,7 @@ export default function SignUpPage() {
               Password
             </label>
             <input
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-black mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
               value={user.password}
@@ -83,7 +106,7 @@ export default function SignUpPage() {
               type="button"
               onClick={onSignUp}
             >
-              Sign In
+              {buttonDisabled ? "No Bro" : "Signup"}
             </button>
             <a
               className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"

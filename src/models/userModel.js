@@ -5,12 +5,16 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, "Please provide your username"],
   },
+  email: {
+    type: String,
+    required: [true, "Please provide your email"],
+  },
   password: {
     type: String,
-    required: [true, "Please provide your username"],
+    required: [true, "Please provide your password"],
   },
 });
 
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model.users || mongoose.model("users", userSchema);
 
 export default User;
