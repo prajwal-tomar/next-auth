@@ -1,19 +1,45 @@
 "use client";
-
+import Link from "next/link";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "react-hot-toast/headless";
 
 const page = () => {
+  const router = useRouter();
   const [user, setUser] = useState({
-    email: "",
     password: "",
     username: "",
   });
+  const [buttonDisabled, setbuttonDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const onLogin = async () => {
+    try {
+      console.log("Logging the user in...");
+      setLoading(true);
+      const response = await axios.post("/api/users/login", user);
+      console.log("Login was successfull" + response);
+      toast.success("Login Success");
+      router.push("/profile");
+    } catch (error: any) {
+      console.log("Login Failed" + error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (user.username.length > 0) setbuttonDisabled(false);
+    else setbuttonDisabled(true);
+  }, [user]);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <div className="w-full max-w-xs">
         <h1 className="text-center text-2xl">
-          {/* {loading ? "Processing..." : "Login Page"} */}
-          Login Page
+          {loading ? "Loggin In the User..." : "Login Page"}
         </h1>
         <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
@@ -30,7 +56,6 @@ const page = () => {
                 type="text"
                 value={user.username}
                 onChange={(event) => {
-                  console.log(event.target.value);
                   setUser({ ...user, username: event.target.value });
                 }}
                 placeholder="Username"
@@ -50,7 +75,6 @@ const page = () => {
               type="password"
               value={user.password}
               onChange={(event) => {
-                console.log(event.target.value);
                 setUser({ ...user, password: event.target.value });
               }}
               placeholder="******************"
@@ -63,9 +87,9 @@ const page = () => {
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="button"
-              // onClick={onSignUp}
+              onClick={onLogin}
             >
-              Login
+              {buttonDisabled ? "No Bro" : "Login"}
             </button>
             <a
               className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
