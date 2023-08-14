@@ -14,7 +14,6 @@ export async function connect() {
         "MongoDB connection error. Please make sure MongoDB is running." + error
       );
     });
-    
   } catch (error) {
     console.log("Something went wrong!");
     console.log(error);
