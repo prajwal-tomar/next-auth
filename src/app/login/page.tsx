@@ -39,7 +39,7 @@ const page = () => {
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <div className="w-full max-w-xs">
         <h1 className="text-center text-2xl">
-          {loading ? "Loggin In the User..." : "Login Page"}
+          {loading ? "Logging the User In..." : "Login Page"}
         </h1>
         <form className="shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
